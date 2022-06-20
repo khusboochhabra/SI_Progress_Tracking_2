@@ -1,61 +1,65 @@
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
+import "./assets/style.css";
+import quizService from "./quizService";
+import QuestionBox from "./components/QuestionBox";
+import Result from "./components/Result";
 
-//Program 1 - component
-/*
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+class QuizBee extends Component {
+  state = {
+    questionBank: [],
+    score: 0,
+    responses: 0
+  };
+  getQuestions = () => {
+    quizService().then(question => {
+      this.setState({
+        questionBank: question
+      });
+    });
+  };
+  computeAnswer= (answer, correctAnswer) => {
+    if(answer == correctAnswer){
+      this.setState({
+        score: this.state.score + 1
+      });
+    }
+    this.setState({
+      responses: this.state.responses < 5 ? this.state.responses +1 :5
+    });
+  };
+  playAgain = () => {
+    this.getQuestions();
+    this.setState({
+      score:0,
+      responses:0
+    });
+  };
+  componentDidMount() {
+    this.getQuestions();
+  }
+  render() {
+    return (
+      <div className = "container">
+        <div className = "title">QuizBee</div>
+        {this.state.questionBank.length >0 && 
+        this.state.responses<5 &&
+        this.state.questionBank.map(({question, answers, correct, questionId}) => (
+        <QuestionBox
+          question={question} 
+          options={answers} 
+          key ={questionId} 
+          selected = {answer => this.computeAnswer(answer, correct)}
+        />
+        )
+        )}
 
 
-//function component
-function Car() {
-  return <h2>Hi, I am a Car!</h2>;
+        {this.state.responses == 5 ? (<Result score={this.state.score} playAgain={this.playAgain} />) 
+        : null}
+      </div>
+    );
+  }
 }
 
-
-//rendering a component
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<Car />)
-*/
-
-
-
-
-
-
-
-//Program 2 - Components in Components
-/*
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-
-function Car() {
-  return <h2>I am a Car! <br></br> This is done by component in component</h2>;
-}
-
-function Garage() {
-  return (
-    <>
-	    <h1>Who lives in my Garage?</h1>
-	    <Car />
-    </>
-  );
-}
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<Garage />);
-*/
-
-
-
-
-//Program 3 - Components in Files
-
-
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import Car from './Car.js';
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<Car />);
-
-
-
+ReactDOM.render(<QuizBee />, document.getElementById("root"));
